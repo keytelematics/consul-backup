@@ -12,35 +12,30 @@ if argv.length isnt 1
   console.error usage
   process.exit 1
 
+consul = argv[0]
 path = require 'path'
 fs = require 'fs'
 mkdirp = require 'mkdirp'
 http = require 'http'
 
-get = (url, cb) ->
 http
-  .get url, (res) ->
-    data = ''
+  .get "http://#{consul}/v1/kv/?recurse", (res) ->
+    keys = ''
     res.setEncoding 'utf8'
-    res.on 'data', (chunk) -> data += chunk
+    res.on 'data', (chunk) -> keys += chunk
     res.on 'end', ->
-      data = JSON.parse data
-      cb null, data
-  .on 'error', (err) ->
-    
-
-get 'http://10.1.1.156:8500/v1/kv/?recurse', (err, keys) ->
-  for key in keys
-    file = "#{process.cwd()}/#{key.Key}"
-    if key.Key.slice(-1) is '/'
-      mkdirp.sync file
-      console.log key.Key
-      continue
-    mkdirp.sync path.dirname file
-    content = ''
-    if key.Value?
-      buf = new Buffer key.Value, 'base64'
-      content = buf.toString()
-    fs.writeFileSync file, content
-    console.log key.Key
-
+      keys = JSON.parse keys
+      for key in keys
+        file = "#{process.cwd()}/#{key.Key}"
+        if key.Key.slice(-1) is '/'
+          mkdirp.sync file
+          console.log key.Key
+          continue
+        mkdirp.sync path.dirname file
+        content = ''
+        if key.Value?
+          buf = new Buffer key.Value, 'base64'
+          content = buf.toString()
+        fs.writeFileSync file, content
+        console.log key.Key
+  .on 'error', console.error
