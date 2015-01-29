@@ -1,0 +1,23 @@
+{
+  "name": "consul-backup",
+  "version": "1.0.0",
+  "description": "Backup and restore consul kv",
+  "bin": {
+    "consul-backup": "bin/backup.js",
+    "consul-restore": "bin/restore.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/metocean/consul-backup.git"
+  },
+  "author": "Thomas Coats",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/metocean/consul-backup/issues"
+  },
+  "readmeFilename": "README.md",
+  "homepage": "https://github.com/metocean/consul-backup",
+  "dependencies": {
+    "mkdirp": "^0.5.0"
+  }
+}
